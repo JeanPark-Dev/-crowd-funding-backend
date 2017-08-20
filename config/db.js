@@ -11,7 +11,6 @@ exports.connect = function(done){
         user: 'root',
         password: 'secret',
         database: 'mysql'
-        // database: 'test'
     });
     done();
 };
