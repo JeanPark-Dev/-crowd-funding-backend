@@ -1,4 +1,4 @@
-const projects = require('../controllers/project.server.controller');
+const users = require('../controllers/user.server.controller');
 const db = require('../../config/db.js');
 
 
@@ -35,30 +35,18 @@ const myMiddleware = (req, res, next) => {
     })
 }
 
+module.exports = function(app) {
+    app.route('/api/users')
+        .post(users.Create_User);
 
+    app.route('/api/users/login')
+        .post(users.Login);
 
-module.exports = function(app){
-    app.route('/api/projects')
-        .get(projects.ViewProjects)
-        .post(myMiddleware, projects.CreateProject);
+    app.route('/api/users/logout')
+        .post(myMiddleware, users.Logout);
 
-    app.route('/api/projects/:id')
-        .get(projects.ProjectDetail)
-        .put(myMiddleware, projects.UpdateProject);
-
-    app.route('/api/projects/:id/image')
-        .get(projects.ViewImage)
-        .put(myMiddleware, projects.UpdateProject_imageUri);
-
-    app.route('/api/projects/:id/pledge')
-        .post();
-
-    app.route('/api/projects/:id/rewards')
-        .get(projects.ViewRewards)
-        .put();
-
-
-    app.route('/api/test')
-        .get(projects.testfunction);
-        // .post(projects.testfunction);
+    app.route('/api/users/:user_id')
+        .get(users.viewUser)
+        .put(myMiddleware, users.UpdateUser)
+        .delete(myMiddleware, users.DeleteUser);
 };
