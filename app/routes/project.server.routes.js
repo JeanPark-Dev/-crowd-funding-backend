@@ -51,7 +51,7 @@ module.exports = function(app){
         .put(myMiddleware, projects.UpdateProject_imageUri);
 
     app.route('/api/projects/:id/pledge')
-        .post();
+        .post(myMiddleware, projects.Pledge);
 
     app.route('/api/projects/:id/rewards')
         .get(projects.ViewRewards)

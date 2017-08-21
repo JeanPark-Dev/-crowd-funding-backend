@@ -109,14 +109,21 @@ exports.DeleteUser = function(req, res){
 
     User.getUserIDbyTOKEN(TOKEN, function(result){
         if (user_id == result){
-            User.deleteUser(user_id, function(err, result){
-                res.sendStatus(200, "User deleted");
+            User.deleteCreator(user_id, function(result){
+                // res.sendStatus(200, "User deleted");
+                console.log
+                User.deleteBackers(user_id, function(result){
+                    User.deleteUser(user_id, function(result){
+                        res.sendStatus(200, "User deleted");
+                    })
+                })
             })
         } else {
             res.sendStatus(403, "Forbidden - account not owned");
         }
     });
 }
+
 
 
 function TOKEN(){

@@ -203,7 +203,13 @@ exports.UpdateProject_imageUri = function(req, res){
 
 }
 
-
+exports.Pledge = function(req, res){
+    var TOKEN = req.get('X-Authorization');
+    var project_id = req.params.id;
+    var current_user_id;
+    var user_data = req.body;
+    var amount = user_data['amount'];
+}
 
 
 

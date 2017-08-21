@@ -14,14 +14,6 @@ exports.ProjectOverview = function(startIndex, count,done) {
     });
 };
 
-exports.ProjectDetails = function(done){
-
-};
-
-exports.Project = function(done){
-
-};
-
 exports.ProjectData = function(projectId, done){
     var sql = 'SELECT Projects.id, Projects.title, Projects.subtitle, Project_data.createDate, Project_data.description, Project_data.imageUri, Project_data.target FROM Projects JOIN Project_data ON (Projects.id = Project_data.id) WHERE Projects.id = ?';
     db.get().query(sql, projectId, function(err, rows){
@@ -76,10 +68,6 @@ exports.Reward = function(project_id, done){
     });
 };
 
-exports.Pledge = function(done){
-
-};
-
 exports.get_Creator = function(user_id, project_id, done){
     var sql = 'SELECT * FROM Creators WHERE user_id = ? and project_id = ?';
     var values = [user_id, project_id];
@@ -88,6 +76,18 @@ exports.get_Creator = function(user_id, project_id, done){
     })
 };
 
+exports.get_Backers = function(user_id, project_id, done){
+    var sql = 'SELECT * FROM Backers WHERE user_id = ? and project_id = ?';
+    var values = [user_id, project_id];
+    db.get().query(sql, values, function(err, rows){
+        return done(rows);
+    })
+}
+
+exports.update_backer = function(user_id, project_id, done){
+    var sql = "UPDATE Backers SET amount = amount + ?, ";
+}
+
 exports.User = function(userId, done){
     var sql = "SELECT id, username, location, email FROM Users where id = ?";
 
@@ -95,9 +95,6 @@ exports.User = function(userId, done){
         if (err) return done({"ERROR": "Error 'User'"});
         return done(rows);
     })
-};
-
-exports.PublicUser = function(done){
 };
 
 exports.projectImage = function(project_id, done){

@@ -92,6 +92,24 @@ exports.deleteUser = function(user_id, done){
     })
 }
 
+exports.deleteCreator = function(user_id, done){
+    var sql = 'DELETE FROM Creators WHERE user_id = ?';
+
+    db.get().query(sql, user_id, function(err, result){
+        if(err) return done({"ERROR": "Error 'deleteCreator'"});
+        done(result);
+    })
+}
+
+exports.deleteBackers = function(user_id, done){
+    var sql = 'DELETE FROM Backers WHERE user_id = ?';
+
+    db.get().query(sql, user_id, function(err, result){
+        if(err) return done({"ERROR": "Error 'deleteBackers'"});
+        done(result);
+    })
+}
+
 exports.getUserIDbyTOKEN = function(TOKEN, done){
     var sql = 'SELECT id FROM Users where Token = ?';
     // console.log("getUserIDbyTOKEN");
@@ -102,4 +120,3 @@ exports.getUserIDbyTOKEN = function(TOKEN, done){
         return done(result[0]['id']);
     });
 };
-
