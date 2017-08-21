@@ -10,8 +10,8 @@ var config = {
     port: process.env.SENG365_MYSQL_PORT || 6033,
     user: 'root',
     password: 'secret',
-    database: 'test'
-    // database: 'mysql'
+    // database: 'test'
+    database: 'mysql'
 };
 
 exports.connect = function(done){
