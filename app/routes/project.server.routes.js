@@ -55,10 +55,6 @@ module.exports = function(app){
 
     app.route('/api/projects/:id/rewards')
         .get(projects.ViewRewards)
-        .put();
+        .put(myMiddleware, projects.Update_Rewards);
 
-
-    app.route('/api/test')
-        .get(projects.testfunction);
-        // .post(projects.testfunction);
 };

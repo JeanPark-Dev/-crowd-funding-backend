@@ -156,6 +156,16 @@ exports.progress_currentPledged_update = function(amount, project_id, done){
   })
 }
 
+exports.rewards_update = function(reward_id, amount, description, done){
+  var sql = "UPDATE Rewards SET amount = amount + ?, description = ? WHERE id = ?";
+  var values = [amount, description, reward_id];
+
+  db.get().query(sql, values, function(err, result){
+    if (err) return done(400, "Malformed request");
+    return done(result);
+  })
+}
+
 
 //--------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------

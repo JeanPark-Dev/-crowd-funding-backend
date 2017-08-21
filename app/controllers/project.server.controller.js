@@ -16,7 +16,6 @@ exports.CreateProject = function(req, res){
 
     var TOKEN = req.get('X-Authorization');
     var project_data = req.body;
-    // console.log(project_data);
     var current_project_id;
     var current_user_id;
     var imageUri = project_data['imageUri'];
@@ -24,14 +23,6 @@ exports.CreateProject = function(req, res){
     var project_description = project_data['description'];
     var creators = project_data['creators'];
     var rewards = project_data['rewards'];
-    // console.log(creators.length)
-    // Project.get_MaxID(function (result){
-    //     current_project_id = JSON.parse(JSON.stringify(result))[0]['MAX(id)'];
-    //     var imageUri = project_data['imageUri'];
-    //     var target = project_data['target'];
-    //
-    //     Project.insert_Project_data(current_project_id, imageUri, target)
-    // })
 
     Project.insert_Projects(project_data['title'], project_data['subtitle'], function(result){
         Project.get_MaxID(function (result){
@@ -118,7 +109,8 @@ exports.ProjectDetail = function(req, res){
                             ,
                             "backers": JSON.parse(Backers)
                         }
-                        res.json(result);
+                        res.json(200, result);
+
                     })
 
                 })
@@ -200,7 +192,27 @@ exports.UpdateProject_imageUri = function(req, res){
             }
         })
     })
+}
 
+exports.Update_Rewards = function(req, res){
+  var TOKEN = req.get('X-Authorization');
+  var reward_data = req.body;
+  var reward_id;
+  var amount;
+  var description;
+
+  // console.log(reward_data.length);
+  if (reward_data.length > 0){
+    for (var i = 0; i > reward_data.length; i++){
+      reward_id = reward_data[i]["id"];
+      amount = reward_data[i]["amount"];
+      description = reward_data[i]["description"]
+
+      Projects.rewards_update(reward_id, amount, description, function(result){
+
+      })
+    } res.sendStatus(200, "OK");
+  }
 }
 
 exports.Pledge = function(req, res){
@@ -238,18 +250,4 @@ exports.Pledge = function(req, res){
 
       })
     })
-}
-
-
-
-
-
-exports.testfunction = function(req, res) {
-    // var id;
-    // Project.get_MaxID(function(result){
-    //     id = JSON.parse(JSON.stringify(result));
-    //     console.log(id[0]['MAX(id)']);
-    // })
-
-    var id = req.headers;
 }
