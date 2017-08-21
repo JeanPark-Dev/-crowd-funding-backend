@@ -244,10 +244,7 @@ exports.Pledge = function(req, res){
                 })
               }
             })
-
-
         })
-
       })
     })
 }
