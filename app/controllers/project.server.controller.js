@@ -207,8 +207,37 @@ exports.Pledge = function(req, res){
     var TOKEN = req.get('X-Authorization');
     var project_id = req.params.id;
     var current_user_id;
+    var current_pledge_id;
     var user_data = req.body;
     var amount = user_data['amount'];
+    var anonymous = user_data['anonymous'];
+
+    Project.getUserIDbyTOKEN(TOKEN, function(result){
+      current_user_id = result;
+      Project.insert_Pledge(amount, anonymous, function(reslut){
+        Project.get_MaxID_pledge(function (result){
+          current_pledge_id = JSON.parse(JSON.stringify(result))[0]['MAX(PledgeId)'];
+            Project.get_Backers(current_user_id, project_id, function(result){
+              if (JSON.parse(JSON.stringify(result)).length > 0){
+                Project.update_backer(amount, current_user_id, project_id, function(result){
+                  Project.progress_currentPledged_update(amount, project_id, function(result){
+                    res.send(200, "OK");
+                  })
+                })
+              } else {
+                Project.insert_Backers(current_user_id, project_id, current_pledge_id, function(result){
+                  Project.progress_currentPledged_update(amount, project_id, function(result){
+                    res.send(200, "OK");
+                  })
+                })
+              }
+            })
+
+
+        })
+
+      })
+    })
 }
 
 

@@ -35,10 +35,10 @@ exports.creators = function(projectId, done){
 };
 
 exports.backers = function(projectId, done){
-    var sql = 'SELECT Users.username, Backers.amount from Backers JOIN Users on (Users.id = Backers.user_id) WHERE project_id = ?';
+    var sql = 'SELECT Users.username, Backers.total_amount as amount from Backers JOIN Users on (Users.id = Backers.user_id) WHERE project_id = ?';
 
     db.get().query(sql, projectId, function(err, rows){
-        if (err) return done({"ERROR": "Error 'creators'"});
+        if (err) return done({"ERROR": "Error 'backers'"});
         return done(rows);
     });
 };
@@ -84,8 +84,13 @@ exports.get_Backers = function(user_id, project_id, done){
     })
 }
 
-exports.update_backer = function(user_id, project_id, done){
-    var sql = "UPDATE Backers SET amount = amount + ?, ";
+exports.update_backer = function(amount, user_id, project_id, done){
+    var sql = "UPDATE Backers SET total_amount = total_amount + ? where user_id = ? and project_id = ?";
+    var values = [amount, user_id, project_id];
+
+    db.get().query(sql, values, function(err, rows){
+      return done(rows);
+    })
 }
 
 exports.User = function(userId, done){
@@ -140,8 +145,22 @@ exports.project_imageUri_Update = function(imageUri, project_id, done){
     })
 }
 
+
+exports.progress_currentPledged_update = function(amount, project_id, done){
+  var sql = "UPDATE Progress SET currentPledged = currentPledged + ? where = project_id = ?";
+  var values = [amount, project_id];
+
+  db.get().query(sql, values, function(err, result){
+    if (err) return done({"ERROR": "progress_currentPledged_update"});
+    return done(result);
+  })
+}
+
+
 //--------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------
+
+
 exports.insert_Projects = function(title, subtitle, done){
     var sql = "INSERT INTO Projects (title, subtitle) VALUES (?, ?)";
     var values = [title, subtitle];
@@ -154,6 +173,13 @@ exports.insert_Projects = function(title, subtitle, done){
 
 exports.get_MaxID = function(done){
     var sql = "SELECT MAX(id) FROM Projects";
+    db.get().query(sql, function(err, result){
+        done(result);
+    });
+};
+
+exports.get_MaxID_pledge = function(done){
+    var sql = "SELECT MAX(PledgeId) FROM Pledge";
     db.get().query(sql, function(err, result){
         done(result);
     });
@@ -183,6 +209,28 @@ exports.insert_Creators = function(user_id, project_id, done){
     var values = [user_id, project_id];
 
     db.get().query(sql, values, function (err, result){
+        done(result);
+    })
+}
+
+exports.insert_Backers = function(user_id, project_id, pledge_id, done){
+    var sql1 = "INSERT INTO Backers (user_id, project_id, pledge_id) VALUES (?, ?, ?)";
+    var sql2 = "UPDATE Progress SET No_Backers = No_Backers + 1 WHERE project_id = ?";
+    var values = [user_id, project_id, pledge_id];
+
+    db.get().query(sql1, values, function(err, result){
+      done(result);
+      db.get().query(sql2, project_id, function(err, result){
+        done(result);
+      })
+    })
+}
+
+exports.insert_Pledge = function(amount, anonymous, done){
+    var sql = "INSERT INTO Pledge (amount, anonymous) VALUES (?, ?)";
+    var values = [amount, anonymous];
+
+    db.get().query(sql, values, function(err, result){
         done(result);
     })
 }
